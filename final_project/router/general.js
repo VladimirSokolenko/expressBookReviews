@@ -33,12 +33,11 @@ public_users.get('/isbn/:isbn',function (req, res) {
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
   //Write your code here
-
-  // USING FILTER METHOD 
-  // Extract the email parameter from the request URL
+  
+  // Extract the author parameter from the request URL
   const author = req.params.author;
   console.log('Author requested: ' + author);
-  // Filter the users array to find users whose email matches the extracted email parameter
+  // Filter the users array to find books which author matches the extracted author parameter
   let filtered_author = Object.values(books).filter((book) => book.author === author);
 
   res.send(filtered_author);
