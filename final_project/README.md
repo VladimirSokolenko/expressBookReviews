@@ -8,8 +8,10 @@ curl.exe "localhost:5000/"
 Log in
 always exists
 curl.exe "localhost:5000/customer/auth/?username=admin&password=1111"
-new user
+new user on customer/auth
 curl.exe "localhost:5000/customer/auth/?username=Vlad&password=pwd123"
+on customer/login
+curl.exe -X POST "localhost:5000/customer/login?username=admin&password=1111"
 
 User registration
 curl.exe -X POST "localhost:5000/register?username=Vlad&password=pwd123"
