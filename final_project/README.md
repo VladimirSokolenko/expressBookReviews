@@ -30,3 +30,8 @@ curl.exe "localhost:5000/title/The%20Divine%20Comedy"
 
 Book review by isbn
 curl.exe "localhost:5000/review/4"
+
+Add/update review (for authorized users)
+curl.exe -X PUT "localhost:5000/customer/auth/review/3?review=test%20review%20with%20spaces!"
+
+Delete review

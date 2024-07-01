@@ -7,23 +7,23 @@ let users = require("./router/auth_users.js").users;
 
 // let users = [{"username": "admin", "password": "1111"}];
 
-// Check if the user with the given username and password exists
-const authenticatedUser = (username, password) => {
-    console.log('Existing users: ' + JSON.stringify(users))
-    // Filter the users array for any user with the same username and password
-    let validusers = users.filter((user) => {
-        return (user.username === username && user.password === password);
-    });
-    console.log('Find users: ' + JSON.stringify(authenticatedUser))
-    // Return true if any valid user is found, otherwise false
-    if (validusers.length > 0) {
-        console.log('User loged in');
-        return true;
-    } else {
-        console.log('User log in failed');
-        return false;
-    }
-}
+// // Check if the user with the given username and password exists
+// const authenticatedUser = (username, password) => {
+//     console.log('Existing users: ' + JSON.stringify(users))
+//     // Filter the users array for any user with the same username and password
+//     let validusers = users.filter((user) => {
+//         return (user.username === username && user.password === password);
+//     });
+//     console.log('Find users: ' + JSON.stringify(authenticatedUser))
+//     // Return true if any valid user is found, otherwise false
+//     if (validusers.length > 0) {
+//         console.log('User loged in');
+//         return true;
+//     } else {
+//         console.log('User log in failed');
+//         return false;
+//     }
+// }
 
 const app = express();
 
@@ -34,30 +34,26 @@ app.use("/customer",session({secret:"fingerprint_customer",resave: true, saveUni
 app.use("/customer/auth/*", function auth(req,res,next){
     //Write the authenication mechanism here
 
-    const username = req.query.username;
-    const password = req.query.password;
-    console.log('User login. Received request: ' + JSON.stringify(req.query));
-    console.log('User login. Received username: ' + username + ', received password: ' + password);
-    // Check if username or password is missing
-    if (!username || !password) {
-        return res.status(404).json({ message: "Error logging in" });
-    }
+    console.log('Books. Session authorization: ' + req.session.authorization + ', session ID: ' + req.session.id);
+    // Check if user is logged in and has valid access token
+    if (req.session.authorization) {
+        let token = req.session.authorization['accessToken'];
 
-    // Authenticate user
-    if (authenticatedUser(username, password)) {
-        // Generate JWT access token
-        let accessToken = jwt.sign({
-            data: password
-        }, 'access', { expiresIn: 60 * 60 });
-
-        // Store access token and username in session
-        req.session.authorization = {
-            accessToken, username
-        }
-        console.log('User logged in. Session authorization: ' + JSON.stringify(req.session.authorization) + ', session ID: ' + req.session.id);
-        return res.status(200).send("User successfully logged in");
+        // Verify JWT token
+        jwt.verify(token, "access", (err, user) => {
+            if (!err) {
+                console.log("User succesfully authenticated" );
+                req.user = user;
+                next(); // Proceed to the next middleware
+            } else {
+                console.log("User not authenticated" );
+                return res.status(403).json({ message: "User not authenticated"});
+            }
+        });
     } else {
-        return res.status(208).json({ message: "Invalid Login. Check username and password" });
+        console.log("User not logged in");
+        next(); // Remove after tests
+        // return res.status(403).json({ message: "User not logged in" });
     }
 
 });
