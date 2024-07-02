@@ -7,11 +7,10 @@ curl.exe "localhost:5000/"
 
 Log in
 always exists
-curl.exe "localhost:5000/customer/auth/?username=admin&password=1111"
-new user on customer/auth
-curl.exe "localhost:5000/customer/auth/?username=Vlad&password=pwd123"
-on customer/login
-curl.exe -X POST "localhost:5000/customer/login?username=admin&password=1111"
+curl.exe -X POST "localhost:5000/customer/login/?username=admin&password=1111"
+
+new user
+curl.exe -X POST "localhost:5000/customer/login?username=Vlad&password=pwd123"
 
 User registration
 curl.exe -X POST "localhost:5000/register?username=Vlad&password=pwd123"
@@ -35,3 +34,4 @@ Add/update review (for authorized users)
 curl.exe -X PUT "localhost:5000/customer/auth/review/3?review=test%20review%20with%20spaces!"
 
 Delete review
+curl.exe -X DELETE "localhost:5000/customer/auth/review/3"
